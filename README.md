@@ -7,7 +7,8 @@ Opened By <a href="https://telegram.me/Bibak_BG">Bibak</a>
 <h6>(کد های زیر را در ترمینال وارد کنید👇)</h6>
 <pre>
 <span>git clone https://github.com/BibakBangTeam/inline.git</span>
-بعد از کلون کردن به فایل bot.lua در پوشه ی bot میروید و در خط ۱ و ۲ و ۹ بجای user name  یوزر نیم سرور خودرا قرار میدهید
+بعد از کلون کردن به فایل bot.lua در bot میروید
+در خط ۱و۲و۹ بجای username یوزر سرور خودرا قرار میدهید
 در خط ۱۰ و ۱۱ شناسه سودو را قرار میدهید
 در خط ۸۷۸ بجای ۱۲۳۴۵۶۷۸۹ شناسه بات api را قرار میدهید
 فایل را سیو میکنید و خارج میشوید
@@ -32,5 +33,6 @@ Opened By <a href="https://telegram.me/Bibak_BG">Bibak</a>
 <span>./launch.sh</span>
 </pre>
 اگر جایی به مشکل بر خوردید به پی وی بنده مراجعه کنید
-# <a href="https://telegram.me/BanG_TeaM">BanG TeaM</a>
+#<a href="https://telegram.me/BanG_TeaM">BanG TeaM</a>
+
 <a href="https://telegram.me/bibak_BG">My Pv </a>
