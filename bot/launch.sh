@@ -1,1 +1,0 @@
-./tg -s bot.lua

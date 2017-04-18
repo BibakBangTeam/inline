@@ -1,0 +1,1 @@
+./tg -s cli.lua
