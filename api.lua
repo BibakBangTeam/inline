@@ -192,8 +192,8 @@ local hash = SUDO..'settings:'..chat..':'..value
                 Canswer(q.id,">برای مشاهده راهنمای بیشتر این بخش عبارت\n/help\nرا ارسال کنید\n>تیم پشتیبانی:[@BanG_Pv_Bot]\n>کانال پشتیبانی:[@BanG_TeaM]\n> فروش :[@Bibak_BG]",true)
 					elseif q.data:match('lock') then
 							local lock = q.data:match('lock (.*)')
-							TIME_MAX = (redis:get(SUDO..'floodtime'..chat) or 3)
-              MSG_MAX = (redis:get(SUDO..'floodmax'..chat) or 5)
+				TIME_MAX = (redis:hget("flooding:settings:"..chat,"floodtime") or 3)
+              MSG_MAX = (redis:hget("flooding:settings:"..chat,"floodmax") or 5)
 							local result = settings(chat,lock)
 							if lock == 'photo' or lock == 'audio' or lock == 'video' or lock == 'gif' or lock == 'music' or lock == 'file' or lock == 'link' or lock == 'sticker' or lock == 'text' or lock == 'pin' or lock == 'username' or lock == 'hashtag' or lock == 'contact' then
 							q.data = 'left_page:'..chat
@@ -207,57 +207,57 @@ local hash = SUDO..'settings:'..chat..':'..value
 							end
 						 q.data = 'next_page:'..chat
 							elseif lock == 'spam' then
-							local hash = redis:get(SUDO..'settings:flood'..chat)
+							local hash = redis:hget("flooding:settings:"..chat, "flood")
 						if hash then
-            if redis:get(SUDO..'settings:flood'..chat) == 'kick' then
-         			spam_status = 'مسدود سازی(کاربر)'
-							redis:set(SUDO..'settings:flood'..chat,'ban')
-              elseif redis:get(SUDO..'settings:flood'..chat) == 'ban' then
+            if redis:hget("flooding:settings:"..chat, "flood") == 'kick' then
+         			spam_status = 'مسدود سازي(کاربر)'
+							redis:hset("flooding:settings:"..chat, "flood",'ban')
+              elseif redis:hget("flooding:settings:"..chat, "flood") == 'ban' then
               spam_status = 'سکوت(کاربر)'
-							redis:set(SUDO..'settings:flood'..chat,'mute')
-              elseif redis:get(SUDO..'settings:flood'..chat) == 'mute' then
-              spam_status = '🔓'
-							redis:del(SUDO..'settings:flood'..chat)
+							redis:hset("flooding:settings:"..chat, "flood",'mute')
+              elseif redis:hget("flooding:settings:"..chat, "flood") == 'mute' then
+              spam_status = '??'
+							redis:hdel("flooding:settings:"..chat, "flood")
               end
           else
-          spam_status = 'اخراج سازی(کاربر)'
-					redis:set(SUDO..'settings:flood'..chat,'kick')
+          spam_status = 'اخراج سازي(کاربر)'
+					redis:hset("flooding:settings:"..chat, "flood",'kick')
           end
 								result = 'عملکرد قفل ارسال هرزنامه : '..spam_status
 								q.data = 'next_page:'..chat
 								elseif lock == 'MSGMAXup' then
 								if tonumber(MSG_MAX) == 20 then
-									Canswer(q.id,'حداکثر عدد انتخابی برای این قابلیت [20] میباشد!',true)
+									Canswer(q.id,'حداکثر عدد انتخابي براي اين قابليت [20] ميباشد!',true)
 									else
 								MSG_MAX = tonumber(MSG_MAX) + 1
-								redis:set(SUDO..'floodmax'..chat,MSG_MAX)
+								redis:hset("flooding:settings:"..chat,"floodmax",MSG_MAX)
 								q.data = 'next_page:'..chat
 							  result = MSG_MAX
 								end
 								elseif lock == 'MSGMAXdown' then
 								if tonumber(MSG_MAX) == 2 then
-									Canswer(q.id,'حداقل عدد انتخابی مجاز  برای این قابلیت [2] میباشد!',true)
+									Canswer(q.id,'حداقل عدد انتخابي مجاز  براي اين قابليت [2] ميباشد!',true)
 									else
 								MSG_MAX = tonumber(MSG_MAX) - 1
-								redis:set(SUDO..'floodmax'..chat,MSG_MAX)
+								redis:hset("flooding:settings:"..chat,"floodmax",MSG_MAX)
 								q.data = 'next_page:'..chat
 								result = MSG_MAX
 							end
 								elseif lock == 'TIMEMAXup' then
 								if tonumber(TIME_MAX) == 10 then
-								Canswer(q.id,'حداکثر عدد انتخابی برای این قابلیت [10] میباشد!',true)
+								Canswer(q.id,'حداکثر عدد انتخابي براي اين قابليت [10] ميباشد!',true)
 									else
 								TIME_MAX = tonumber(TIME_MAX) + 1
-								redis:set(SUDO..'floodtime'..chat,TIME_MAX)
+								redis:hset("flooding:settings:"..chat ,"floodtime" ,TIME_MAX)
 								q.data = 'next_page:'..chat
 								result = TIME_MAX
 									end
 								elseif lock == 'TIMEMAXdown' then
 								if tonumber(TIME_MAX) == 2 then
-									Canswer(q.id,'حداقل عدد انتخابی مجاز  برای این قابلیت [2] میباشد!',true)
+									Canswer(q.id,'حداقل عدد انتخابي مجاز  براي اين قابليت [2] ميباشد!',true)
 									else
 								TIME_MAX = tonumber(TIME_MAX) - 1
-								redis:set(SUDO..'floodtime'..chat,TIME_MAX)
+								redis:hset("flooding:settings:"..chat ,"floodtime" ,TIME_MAX)
 								q.data = 'next_page:'..chat
 								result = TIME_MAX
 									end
@@ -1071,14 +1071,14 @@ local function getsettings(value)
           return 'غیرفعال'
           end
         elseif value == 'spam' then
-        local hash = redis:get(SUDO..'settings:flood'..chat)
+       local hash = redis:hget("flooding:settings:"..chat, "flood")
         if hash then
-            if redis:get(SUDO..'settings:flood'..chat) == 'kick' then
-         return 'اخراج(کاربر)'
-              elseif redis:get(SUDO..'settings:flood'..chat) == 'ban' then
-              return 'مسدود سازی(کاربر)'
-              elseif redis:get(SUDO..'settings:flood'..chat) == 'mute' then
-              return 'سکوت(کاربر)'
+           if redis:hget("flooding:settings:"..chat, "flood") == 'kick' then
+         return '?Kick?'
+             elseif redis:hget("flooding:settings:"..chat, "flood") == 'ban' then
+              return '?Ban?'
+              elseif redis:hget("flooding:settings:"..chat, "flood") == 'mute' then
+              return '??Silent??'
               end
           else
           return '🔓'
@@ -1142,14 +1142,14 @@ local function getsettings(value)
         return "نامحدود!"
        end
         elseif value == 'spam' then
-        local hash = redis:get(SUDO..'settings:flood'..chat)
+       local hash = redis:hget("flooding:settings:"..chat, "flood")
         if hash then
-            if redis:get(SUDO..'settings:flood'..chat) == 'kick' then
-         return 'اخراج(کاربر)'
-              elseif redis:get(SUDO..'settings:flood'..chat) == 'ban' then
-              return 'مسدود سازی(کاربر)'
-              elseif redis:get(SUDO..'settings:flood'..chat) == 'mute' then
-              return 'سکوت(کاربر)'
+           if redis:hget("flooding:settings:"..chat, "flood") == 'kick' then
+         return '?Kick?'
+             elseif redis:hget("flooding:settings:"..chat, "flood") == 'ban' then
+              return '?Ban?'
+              elseif redis:hget("flooding:settings:"..chat, "flood") == 'mute' then
+              return '??Silent??'
               end
           else
           return '🔓'
@@ -1228,14 +1228,14 @@ local function getsettings(value)
           return 'غیرفعال'
           end
         elseif value == 'spam' then
-        local hash = redis:get(SUDO..'settings:flood'..chat)
+       local hash = redis:hget("flooding:settings:"..chat, "flood")
         if hash then
-            if redis:get(SUDO..'settings:flood'..chat) == 'kick' then
-         return 'اخراج(کاربر)'
-              elseif redis:get(SUDO..'settings:flood'..chat) == 'ban' then
-              return 'مسدود-سازی(کاربر)'
-              elseif redis:get(SUDO..'settings:flood'..chat) == 'mute' then
-              return 'سکوت-کاربر'
+           if redis:hget("flooding:settings:"..chat, "flood") == 'kick' then
+         return '?Kick?'
+             elseif redis:hget("flooding:settings:"..chat, "flood") == 'ban' then
+              return '?Ban?'
+              elseif redis:hget("flooding:settings:"..chat, "flood") == 'mute' then
+              return '??Silent??'
               end
           else
           return '🔓'
@@ -1246,8 +1246,8 @@ local function getsettings(value)
           return '🔓'
           end
         end
-									local MSG_MAX = (redis:get(SUDO..'floodmax'..chat) or 5)
-								local TIME_MAX = (redis:get(SUDO..'floodtime'..chat) or 3)
+									local MSG_MAX = (redis:hget("flooding:settings:"..chat,"floodmax") or 5)
+								local TIME_MAX = (redis:hget("flooding:settings:"..chat,"floodtime") or 3)
          		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
