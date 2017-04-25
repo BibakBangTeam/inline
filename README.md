@@ -1,5 +1,6 @@
 <h1><p align="center"><stronge>Inline Suores</stronge>
 <h3><p align="center">Opened By <a href="https://telegram.me/Bibak_BG"> Bibak </a>
+<h3><p align="center">DeBug By <a href="https://telegram.me/MehTi"> MehTi </a>
 <h1><p align="center"><stronge>ستاره یادتون نره:)</stronge>
 
 
