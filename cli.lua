@@ -329,29 +329,35 @@ function run(msg,data)
     end
   ------------------------------------------------------------
     if chat_type == 'super' then
-    NUM_MSG_MAX = 5
-    if db:get(SUDO..'floodmax'..msg.chat_id_) then
-      NUM_MSG_MAX = db:get(SUDO..'floodmax'..msg.chat_id_)
+		
+-----------------------chack Flooding ------------------------	Dbug by #MehTi (@MehTi)	
+local ch = msg.chat_id_
+local user_id = msg.sender_user_id_
+floods = db:hget("flooding:settings:"..ch,"flood") or  'nil'
+max_msg = db:hget("flooding:settings:"..ch,"floodmax") or 5
+max_time = db:hget("flooding:settings:"..ch,"floodtime") or 5
+------------------Flooding----------------------------#Mehti
+if db:hget("flooding:settings:"..ch,"flood") then
+if not is_mod(msg) then
+	local post_count = tonumber(db:get('floodc:'..msg.sender_user_id_..':'..msg.chat_id_) or 0)
+	if post_count > tonumber(db:hget("flooding:settings:"..ch,"floodmax") or 5) then
+ local ch = msg.chat_id_
+         local type = db:hget("flooding:settings:"..ch,"flood")
+         trigger_anti_spam(msg,type)
+ end
+	db:setex('floodc:'..msg.sender_user_id_..':'..msg.chat_id_, tonumber(db:hget("flooding:settings:"..msg.chat_id_,"floodtime") or 3), post_count+1)
+end
+end
+local edit_id = data.text_ or 'nil' --bug #behrad
+	 local ch = msg.chat_id_
+    max_msg = 5
+    if db:hget("flooding:settings:"..ch,"floodmax") then
+       max_msg = db:hget("flooding:settings:"..ch,"floodmax")
       end
-      TIME_CHECK = 3
-    if db:get(SUDO..'floodtime'..msg.chat_id_) then
-      TIME_CHECK = db:get(SUDO..'floodtime'..msg.chat_id_)
-      end
-    if text and text:match('test (%d+)') then
-     
-      end
-    -- check flood
-    if db:get(SUDO..'settings:flood'..msg.chat_id_) then
-    if not is_mod(msg) then
-      local post_count = 'user:' .. msg.sender_user_id_ .. ':floodc'
-      local msgs = tonumber(db:get(post_count) or 0)
-      if msgs > tonumber(NUM_MSG_MAX) and not msg.content_.ID == "MessageChatAddMembers" then
-       local type = db:get(SUDO..'settings:flood'..msg.chat_id_)
-        trigger_anti_spam(msg,type)
-      end
-      db:setex(post_count, tonumber(TIME_CHECK), msgs+1)
-    end
-    end
+    if db:hget("flooding:settings:"..ch,"floodtime") then
+		max_time = db:hget("flooding:settings:"..ch,"floodtime")
+      end	
+		
 -- save pin message id
   if msg.content_.ID == 'MessagePinMessage' then
  if is_lock(msg,'pin') and is_owner(msg) then
@@ -601,20 +607,20 @@ end
         end
         end
     
- -- lock flood settings
+ -- lock flood settings -- #MehTi
     if text and is_owner(msg) then
-       local hash = SUDO..'settings:flood'..msg.chat_id_
-      if text == 'lock flood kick' then
-      db:set(hash,'kick') 
+	   local ch = msg.chat_id_
+      if text == 'flood kick' then
+      db:hset("flooding:settings:"..ch ,"flood",'kick') 
         bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>قفل ارسال پیام مکرر فعال گردید!</code> \n<code>وضعیت</code> > <i>اخراج(کاربر)</i>',1, 'html')
-      elseif text == 'lock flood ban' then
-        db:set(hash,'ban') 
+      elseif text == 'flood ban' then
+        db:hset("flooding:settings:"..ch ,"flood",'ban') 
         bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>قفل ارسال پیام مکرر فعال گردید!</code> \n<code>وضعیت</code> > <i>مسدود-سازی(کاربر)</i>',1, 'html')
-        elseif text == 'lock flood mute' then
-        db:set(hash,'mute') 
+        elseif text == 'flood mute' then
+        db:hset("flooding:settings:"..ch ,"flood",'mute') 
         bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>قفل ارسال پیام مکرر فعال گردید!</code> \n<code>وضعیت</code> > <i>سکوت(کاربر)</i>',1, 'html')
         elseif text == 'unlock flood' then
-        db:del(hash) 
+        db:hdel("flooding:settings:"..ch ,"flood") 
         bot.sendMessage(msg.chat_id_, msg.id_, 1, ' <code>قفل ارسال پیام مکرر غیرفعال گردید!</code> ',1, 'html')
             end
           end
@@ -842,13 +848,14 @@ end
           return '<code>غیرفعال</code>'
           end
         elseif value == 'spam' then
-        local hash = db:get(SUDO..'settings:flood'..msg.chat_id_)
+		local ch = msg.chat_id_
+        local hash = db:hget("flooding:settings:"..ch,"flood")
         if hash then
-             if db:get(SUDO..'settings:flood'..msg.chat_id_) == 'kick' then
+             if db:hget("flooding:settings:"..ch, "flood") == "kick" then
          return '<code>User-kick</code>'
-              elseif db:get(SUDO..'settings:flood'..msg.chat_id_) == 'ban' then
+              elseif db:hget("flooding:settings:"..ch,"flood") == "ban" then
               return '<code>User-ban</code>'
-							elseif db:get(SUDO..'settings:flood'..msg.chat_id_) == 'mute' then
+							elseif db:hget("flooding:settings:"..ch,"flood") == "mute" then
               return '<code>Mute</code>'
               end
           else
@@ -903,11 +910,13 @@ end
         bot.sendMessage(msg.chat_id_, msg.id_, 1, text, 1, '')
        end]]
       if text and text:match('^floodmax (%d+)$') then
-          db:set(SUDO..'floodmax'..msg.chat_id_,text:match('floodmax (.*)'))
+		local ch = msg.chat_id_
+          db:hset("flooding:settings:"..ch ,"floodmax" ,text:match('floodmax (.*)'))
           bot.sendMessage(msg.chat_id_, msg.id_, 1,'<code>>حداکثر پیام تشخیص ارسال پیام مکرر تنظیم شد به:</code> [<b>'..text:match('floodmax (.*)')..'</b>] <code>تغییر یافت.</code>', 1, 'html')
         end
         if text and text:match('^floodtime (%d+)$') then
-          db:set(SUDO..'floodtime'..msg.chat_id_,text:match('floodtime (.*)'))
+		local ch = msg.chat_id_
+          db:hset("flooding:settings:"..ch ,"floodtime" ,text:match('floodtime (.*)'))
           bot.sendMessage(msg.chat_id_, msg.id_, 1,'<code>>حداکثر زمان تشخیص ارسال پیام مکرر تنظیم شد به:</code> [<b>'..text:match('floodtime (.*)')..'</b>] <code>ثانیه.</code>', 1, 'html')
         end
         if text == 'link' then
