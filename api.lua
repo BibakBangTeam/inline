@@ -7,9 +7,9 @@ local url = 'https://api.telegram.org/bot' .. token
 local offset = 0
 local redis = require('redis')
 local redis = redis.connect('127.0.0.1', 6379)
-local SUDO = 304107094
+local SUDO = 30410709
 function is_mod(chat,user)
-sudo = {304107094}
+sudo = {30410709}
   local var = false
   for v,_user in pairs(sudo) do
     if _user == user then
