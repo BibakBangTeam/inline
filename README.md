@@ -1,6 +1,5 @@
 <h1><p align="center"><stronge>Inline Suores</stronge>
-<h3><p align="center">Opened By <a href="https://telegram.me/Bibak_BG"> Bibak </a>
-<h3><p align="center">DeBug By <a href="https://telegram.me/MehTi"> MehTi </a>
+<h3><a href="https://telegram.me/BGTeaM"> BGTeaM </a>
 <h1><p align="center"><stronge>ستاره یادتون نره:)</stronge>
 
 
@@ -48,6 +47,8 @@
 <br><br>
 <h4 dir="rtl"><br>روشن کردن جفت بات ها با اتولانچ👇</h4>
 <pre>
+<span>killall tmux</span>
+<span>killall -9 bash</span>
 <span>cd inline</span>
 <span>./on.sh</span>
 </pre>
