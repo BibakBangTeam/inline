@@ -48,6 +48,7 @@
 <h4 dir="rtl"><br>روشن کردن جفت بات ها با اتولانچ👇</h4>
 <pre>
 <span>killall tmux</span>
+<span>killall screen</span>
 <span>killall -9 bash</span>
 <span>cd inline</span>
 <span>./on.sh</span>
