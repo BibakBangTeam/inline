@@ -1,5 +1,5 @@
-<h1><p align="center"><stronge>Inline Suores</stronge>
-<h3><p align="center"<a href="https://telegram.me/BGTeaM"> BGTeaM </a>
+<h1><p align="center"><stronge>Inline Source</stronge>
+<h3><p align="center"><a href="https://telegram.me/BGTeaM"> BGTeaM </a>
 <h1><p align="center"><stronge>ستاره یادتون نره:)</stronge>
 
 
