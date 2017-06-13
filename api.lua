@@ -1,15 +1,15 @@
-local URL = require "socket.url"
+﻿local URL = require "socket.url"
 local https = require "ssl.https"
 local serpent = require "serpent"
-local json = (loadfile "/home/username/inline/JSON.lua")()
-local token = '254778917:AAEGVrvHjYc-wkwrMuF0hekpGHpmPr3htog' --token
+local json = (loadfile "/home/USERNAME/inline/JSON.lua")()
+local token = '386343615:AAEdTNZP025yDWqUhBAdb7vW9oHVCLewdSk' --token
 local url = 'https://api.telegram.org/bot' .. token
 local offset = 0
 local redis = require('redis')
 local redis = redis.connect('127.0.0.1', 6379)
-local SUDO = 30410709
+local SUDO = 261764158
 function is_mod(chat,user)
-sudo = {30410709}
+sudo = {261764158}
   local var = false
   for v,_user in pairs(sudo) do
     if _user == user then
@@ -17,6 +17,10 @@ sudo = {30410709}
     end
   end
  local hash = redis:sismember(SUDO..'owners:'..chat,user)
+ if hash then
+ var = true
+ end
+  local hash = redis:sismember(SUDO..'helpsudo:',user)
  if hash then
  var = true
  end
@@ -83,7 +87,7 @@ function Canswer(callback_query_id, text, show_alert)
   end
     https.request(urlk)
   end
-function settings(chat,value) 
+function settings(chat,value)
 local hash = SUDO..'settings:'..chat..':'..value
   if value == 'file' then
       text = 'فیلتر فایل'
@@ -132,7 +136,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 	if redis:get(hash) then
   redis:del(hash)
 return text..'  غیرفعال شد.'
-		else 
+		else
 		redis:set(hash,true)
 return text..'  فعال شد.'
 end
@@ -144,8 +148,8 @@ function fwd(chat_id, from_chat_id, message_id)
   end
   return res, code
 end
-function sleep(n) 
-os.execute("sleep " .. tonumber(n)) 
+function sleep(n)
+os.execute("sleep " .. tonumber(n))
 end
 local day = 86400
 local function run()
@@ -159,13 +163,13 @@ local function run()
           offset = msg.update_id + 1
           if msg.inline_query then
             local q = msg.inline_query
-						if q.from.id == 352689853 or q.from.id == 304107094 then
+						if q.from.id == 370725344 or q.from.id == 261764158 then
             if q.query:match('%d+') then
               local chat = '-'..q.query:match('%d+')
 							local function is_lock(chat,value)
 local hash = SUDO..'settings:'..chat..':'..value
  if redis:get(hash) then
-    return true 
+    return true
     else
     return false
     end
@@ -173,14 +177,18 @@ local hash = SUDO..'settings:'..chat..':'..value
               local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                 {text = 'تنظیمات گروه', callback_data = 'groupsettings:'..chat} --,{text = 'واحد فروش', callback_data = 'aboute:'..chat}
+                 {text = '⛓تنظیمات⚙️', callback_data = 'groupsettings:'..chat} --,{text = '💵Sales💵', callback_data = 'aboute:'..chat}
                 },{
-				 {text = 'پشتیبانی', callback_data = 'supportbot:'..chat},{text = 'تبلیغات شما', callback_data = 'youradds:'..chat}
-				  },{
-				 {text = 'اطلاعات گروه', callback_data = 'groupinfo:'..chat},{text = 'راهنما', callback_data = 'helpbot:'..chat}
+				 --{text = '📢Support📢', callback_data = 'supportbot:'..chat} --,{text = '📝Your Adds📝', callback_data = 'youradds:'..chat}
+				 -- },{
+				 {text = '📄اطلاعات گروه📙', callback_data = 'groupinfo:'..chat} --,{text = '⚠️Help⚠️', callback_data = 'helpbot:'..chat}
+				},{
+				{text = '📝راهنما🔖', callback_data = 'helptext:'..chat}
+				},{
+				{text = '⭕️بستن پنل🚫', callback_data = 'close:'..chat}
 				}
 							}
-            answer(q.id,'settings','Group settings',chat,'به بخش اصلی خوش آمدید.\nاز منوی زیر انتخاب کنید:',keyboard)
+            answer(q.id,'panel','Group settings',chat,'🌐 منوی اصلی :',keyboard)
             end
             end
 						end
@@ -189,11 +197,12 @@ local hash = SUDO..'settings:'..chat..':'..value
 						local chat = ('-'..q.data:match('(%d+)') or '')
 						if is_mod(chat,q.from.id) then
              if q.data:match('_') and not (q.data:match('next_page') or q.data:match('left_page')) then
-                Canswer(q.id,">برای مشاهده راهنمای بیشتر این بخش عبارت\n/help\nرا ارسال کنید\n>تیم پشتیبانی:[@BanG_Pv_Bot]\n>کانال پشتیبانی:[@BanG_TeaM]\n> فروش :[@Bibak_BG]",true)
+                Canswer(q.id,"@BanG_TeaM :D",true)
 					elseif q.data:match('lock') then
-							local lock = q.data:match('lock (.*)')
+							local lock = q.data:match('lock (.*)')			
 				TIME_MAX = (redis:hget("flooding:settings:"..chat,"floodtime") or 3)
               MSG_MAX = (redis:hget("flooding:settings:"..chat,"floodmax") or 5)
+			                WARN_MAX = (redis:hget("warn:settings:"..chat,"warnmax") or 3)
 							local result = settings(chat,lock)
 							if lock == 'photo' or lock == 'audio' or lock == 'video' or lock == 'gif' or lock == 'music' or lock == 'file' or lock == 'link' or lock == 'sticker' or lock == 'text' or lock == 'pin' or lock == 'username' or lock == 'hashtag' or lock == 'contact' then
 							q.data = 'left_page:'..chat
@@ -210,24 +219,47 @@ local hash = SUDO..'settings:'..chat..':'..value
 							local hash = redis:hget("flooding:settings:"..chat, "flood")
 						if hash then
             if redis:hget("flooding:settings:"..chat, "flood") == 'kick' then
-         			spam_status = 'مسدود سازي(کاربر)'
+         			spam_status = 'مسدود سازی(کاربر)'
 							redis:hset("flooding:settings:"..chat, "flood",'ban')
               elseif redis:hget("flooding:settings:"..chat, "flood") == 'ban' then
               spam_status = 'سکوت(کاربر)'
 							redis:hset("flooding:settings:"..chat, "flood",'mute')
               elseif redis:hget("flooding:settings:"..chat, "flood") == 'mute' then
-              spam_status = '??'
+              spam_status = '🔓'
 							redis:hdel("flooding:settings:"..chat, "flood")
               end
           else
-          spam_status = 'اخراج سازي(کاربر)'
+          spam_status = 'اخراج سازی(کاربر)'
 					redis:hset("flooding:settings:"..chat, "flood",'kick')
           end
 								result = 'عملکرد قفل ارسال هرزنامه : '..spam_status
+								
+								
+								
+			 q.data = 'next_page:'..chat
+							elseif lock == 'warn' then
+							local hash = redis:hget("warn:settings:"..chat, "swarn")
+						if hash then
+            if redis:hget("warn:settings:"..chat, "swarn") == 'kick' then
+         			warn_status = 'مسدود سازی(کاربر)'
+							redis:hset("warn:settings:"..chat, "swarn",'ban')
+              elseif redis:hget("warn:settings:"..chat, "swarn") == 'ban' then
+              warn_status = 'سکوت(کاربر)'
+							redis:hset("warn:settings:"..chat, "swarn",'mute')
+              elseif redis:hget("warn:settings:"..chat, "swarn") == 'mute' then
+              warn_status = '🔓'
+							redis:hdel("warn:settings:"..chat, "swarn")
+              end
+          else
+          warn_status = 'اخراج سازی(کاربر)'
+					redis:hset("warn:settings:"..chat, "swarn",'kick')
+          end
+								result = 'عملکرد قفل ارسال هرزنامه : '..warn_status
+
 								q.data = 'next_page:'..chat
 								elseif lock == 'MSGMAXup' then
 								if tonumber(MSG_MAX) == 20 then
-									Canswer(q.id,'حداکثر عدد انتخابي براي اين قابليت [20] ميباشد!',true)
+									Canswer(q.id,'حداکثر عدد انتخابی برای این قابلیت [20] میباشد!',true)
 									else
 								MSG_MAX = tonumber(MSG_MAX) + 1
 								redis:hset("flooding:settings:"..chat,"floodmax",MSG_MAX)
@@ -236,7 +268,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 								end
 								elseif lock == 'MSGMAXdown' then
 								if tonumber(MSG_MAX) == 2 then
-									Canswer(q.id,'حداقل عدد انتخابي مجاز  براي اين قابليت [2] ميباشد!',true)
+									Canswer(q.id,'حداقل عدد انتخابی مجاز  برای این قابلیت [2] میباشد!',true)
 									else
 								MSG_MAX = tonumber(MSG_MAX) - 1
 								redis:hset("flooding:settings:"..chat,"floodmax",MSG_MAX)
@@ -245,7 +277,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 							end
 								elseif lock == 'TIMEMAXup' then
 								if tonumber(TIME_MAX) == 10 then
-								Canswer(q.id,'حداکثر عدد انتخابي براي اين قابليت [10] ميباشد!',true)
+								Canswer(q.id,'حداکثر عدد انتخابی برای این قابلیت [10] میباشد!',true)
 									else
 								TIME_MAX = tonumber(TIME_MAX) + 1
 								redis:hset("flooding:settings:"..chat ,"floodtime" ,TIME_MAX)
@@ -254,13 +286,33 @@ local hash = SUDO..'settings:'..chat..':'..value
 									end
 								elseif lock == 'TIMEMAXdown' then
 								if tonumber(TIME_MAX) == 2 then
-									Canswer(q.id,'حداقل عدد انتخابي مجاز  براي اين قابليت [2] ميباشد!',true)
+									Canswer(q.id,'حداقل عدد انتخابی مجاز  برای این قابلیت [2] میباشد!',true)
 									else
 								TIME_MAX = tonumber(TIME_MAX) - 1
 								redis:hset("flooding:settings:"..chat ,"floodtime" ,TIME_MAX)
 								q.data = 'next_page:'..chat
 								result = TIME_MAX
 									end
+									
+							    elseif lock == 'WARNMAXup' then
+								if tonumber(WARN_MAX) == 20 then
+									Canswer(q.id,'حداکثر عدد انتخابی برای این قابلیت [20] میباشد!',true)
+									else
+								WARN_MAX = tonumber(MSG_MAX) + 1
+								redis:hset("warn:settings:"..chat,"warnmax",MSG_MAX)
+								q.data = 'next_page:'..chat
+							  result = WARN_MAX
+								end
+								elseif lock == 'WARNMAXdown' then
+								if tonumber(WARN_MAX) == 2 then
+									Canswer(q.id,'حداقل عدد انتخابی مجاز  برای این قابلیت [2] میباشد!',true)
+									else
+								WARN_MAX = tonumber(WARN_MAX) - 1
+								redis:hset("warn:settings:"..chat,"warnmax",WARN_MAX)
+								q.data = 'next_page:'..chat
+								result = WARN_MAX
+							end
+									
 								elseif lock == 'welcome' then
 								local h = redis:get(SUDO..'status:welcome:'..chat)
 								if h == 'disable' or not h then
@@ -283,7 +335,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 							local function is_lock(chat,value)
 local hash = SUDO..'settings:'..chat..':'..value
  if redis:get(hash) then
-    return true 
+    return true
     else
     return false
     end
@@ -291,14 +343,18 @@ local hash = SUDO..'settings:'..chat..':'..value
               local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                 {text = 'تنظیمات گروه', callback_data = 'groupsettings:'..chat} --,{text = 'واحد فروش', callback_data = 'aboute:'..chat}
+                 {text = '⛓تنظیمات⚙️', callback_data = 'groupsettings:'..chat} --,{text = '💵Sales💵', callback_data = 'aboute:'..chat}
                 },{
-				 {text = 'پشتیبانی', callback_data = 'supportbot:'..chat},{text = 'تبلیغات شما', callback_data = 'youradds:'..chat}
-				  },{
-				 {text = 'اطلاعات گروه', callback_data = 'groupinfo:'..chat},{text = 'راهنما', callback_data = 'helpbot:'..chat}
-				}
+				 --{text = '📢Support📢', callback_data = 'supportbot:'..chat} --,{text = '📝Your Adds📝', callback_data = 'youradds:'..chat}
+				 -- },{
+				 {text = '📄اطلاعات گروه📙', callback_data = 'groupinfo:'..chat} --,{text = '⚠️Help⚠️', callback_data = 'helpbot:'..chat}
+				},{
+				{text = '📝راهنما🔖', callback_data = 'helptext:'..chat}
+				},{
+				{text = '⭕️بستن پنل🚫', callback_data = 'close:'..chat}
 							}
-            edit(q.inline_message_id,'`به بخش اصلی خوش آمدید.`\n`از منوی زیر انتخاب کنید:`',keyboard)
+							}
+            edit(q.inline_message_id,'🌀 برگشتیم به منوی اصلی :',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('supportbot') then
@@ -306,16 +362,14 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                  {text = 'تیم فنی', callback_data = 'teamfani:'..chat},{text = 'واحد فروش', callback_data = 'fahedsale:'..chat}
+                  {text = '🛠Technical Team🛠', callback_data = 'teamfani:'..chat},{text = '📝Offer📝', callback_data = 'enteqadvapishnehad:'..chat}
                 },{
-				 {text = 'گزارش مشکل', callback_data = 'reportproblem:'..chat},{text = 'انتقادات و پیشنهادات', callback_data = 'enteqadvapishnehad:'..chat}
+				 {text = '📱Report a problem📱', callback_data = 'reportproblem:'..chat},{text = '❓Frequently Questions❓', callback_data = 'soalatmotadavel:'..chat}
 				 },{
-				 {text = 'سوالات متداول', callback_data = 'soalatmotadavel:'..chat}
-                },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'به بخش پشتیبانی خوش آمدید.\nاز منوی زیر انتخاب کنید:',keyboard)
+              edit(q.inline_message_id,'`Welcome To` *Support🌷*\n`Select From` *Menu*👇',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('teamfani') then
@@ -323,10 +377,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'supportbot:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙Back', callback_data = 'supportbot:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`به بخش ارتباط با بخش فنی خوش آمدید.`\n`در صورت وجود مشکل در ربات به ما پیغام ارسال کنید:`\n[ارسال پیغام](https://telegram.me/BanG_Pv_Bot)',keyboard)
+              edit(q.inline_message_id,'[🔖Send Your Msg🔖](https://telegram.me/BanG_Pv_Bot)',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('reportproblem') then
@@ -334,10 +388,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'supportbot:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙Back', callback_data = 'supportbot:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`به بخش گزارش مشکل خوش آمدید.`\n`در صورت وجود مشکل در کارکرد سرویس شما به ما اطلاع دهید:`\n[گزارش مشکل](https://telegram.me/BanG_Pv_Bot)',keyboard)
+              edit(q.inline_message_id,'[✔️Send Your Problem✔️](https://telegram.me/BanG_Pv_Bot)',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('fahedsale') then
@@ -351,7 +405,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 				{text = 'گزارشات مالی', callback_data = 'reportmony:'..chat}
 
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'supportbot:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙Back', callback_data = 'supportbot:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`به بخش خرید گروه،تمدید سرویس،گزارش مالی خوش آمدید.`\n`از منوی زیر انتخاب کنید:`',keyboard)
@@ -362,7 +416,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'fahedsale:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙Back', callback_data = 'fahedsale:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`طرح انتخابی [شما دائمی/مادام العمر(نامحدود روز)] میباشد و نیاز به تمدید طرح ندارید!`',keyboard)
@@ -373,10 +427,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'fahedsale:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'fahedsale:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`با عرض پوزش، متاسفانه این سیستم تا اطلاع ثانوی غیرفعال میباشد.`',keyboard)
+              edit(q.inline_message_id,'`🚫Sorry, unfortunately the system is disabled until further notice🚫`',keyboard)
             end
 			------------------------------------------------------------------------
 							if q.data:match('enteqadvapishnehad') then
@@ -384,10 +438,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'supportbot:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'supportbot:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`به بخش انتقادات و پیشنهادات خوش آمدید.`\n`هرگونه انتقاد،پیشنهاد را با در میان بگذارید:`\n[ارسال انتقاد،پیشنهاد](https://telegram.me/BanG_Pv_Bot)',keyboard)
+              edit(q.inline_message_id,'[❗️Send Your Offer❗️](https://telegram.me/BanG_Pv_Bot)',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('soalatmotadavel') then
@@ -395,32 +449,39 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'supportbot:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'supportbot:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`با عرض پوزش، متاسفانه این سیستم تا اطلاع ثانوی غیرفعال میباشد.`',keyboard)
+              edit(q.inline_message_id,'`🚫Sorry, unfortunately the system is disabled until further notice🚫`',keyboard)
             end
 							------------------------------------------------------------------------
-							if q.data:match('youradds') then
+						if q.data:match('close') then
                            local chat = '-'..q.data:match('(%d+)$')
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+				 {text = '❌خیر❌', callback_data = 'firstmenu:'..chat},{text = '✅بله✅', callback_data = 'closepanel:'..chat}
+                },{
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'با عرض پوزش، متاسفانه این سیستم تا اطلاع ثانوی غیرفعال میباشد.',keyboard)
+              edit(q.inline_message_id,'⚜️ایا از بستن پنل مطمین هستید؟',keyboard)
             end
+			-----------------------------------------------------
+						if q.data:match('closepanel') then
+                           local chat = '-'..q.data:match('(%d+)$')
+			edit(q.inline_message_id,'`⚜️پنل با موفقیت بسته شد✅`')
+           end
 							------------------------------------------------------------------------
-							--[[if q.data:match('groupinfo') then
+							--[[if q.data:match('groupinfo') thens
                            local chat = '-'..q.data:match('(%d+)$')
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'با عرض پوزش، متاسفانه این سیستم تا اطلاع ثانوی غیرفعال میباشد.',keyboard)
+              edit(q.inline_message_id,'🚫Sorry, unfortunately the system is disabled until further notice🚫',keyboard)
             end]]
 							------------------------------------------------------------------------
 							if q.data:match('helpbot') then
@@ -428,14 +489,14 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                  {text = 'راهنمای متنی', callback_data = 'helptext:'..chat}
+                  {text = '📝Text Help📝', callback_data = 'helptext:'..chat}
                 },{
-				 {text = 'راهنمای صوتی', callback_data = 'voicehelp:'..chat},{text = 'راهنمای تصویری', callback_data = 'videohelp:'..chat}
+				 {text = '🎤Voice Help🎤', callback_data = 'voicehelp:'..chat},{text = '🌆Photo Help🌆', callback_data = 'videohelp:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`به بخش راهنما خوش آمدید.`\n`از منوی زیر انتخاب کنید:`',keyboard)
+              edit(q.inline_message_id,'`WelCome To` _Help🌷_\n Select From *Menu👇*',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('helptext') then
@@ -443,7 +504,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'helpbot:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
               edit(q.inline_message_id,'>[راهنمای مالکین گروه(اصلی-فرعی)](https://telegram.me/bang_team)\n*[/#!]options* --دریافت تنظیمات گروه به صورت اینلاین\n*[/#!]setrules text* --تنظیم قوانین گروه\n*[/#!]modset* @username|reply|user-id --تنظیم مالک فرعی جدید برای گروه با یوزرنیم|ریپلی|شناسه -فرد\n*[/#!]moddem* @username|reply|user-id --حذف مالک فرعی از گروه با یوزرنیم|ریپلی|شناسه -فرد\n*[/#!]ownerlist* --دریافت لیست مدیران اصلی\n*[/#!]managers* --دریافت لیست مدیران فرعی گروه\n*[/#!]setlink link* {لینک-گروه} --تنظیم لینک گروه\n*[/#!]link* دریافت لینک گروه\n*[/#!]kick* @username|reply|user-id اخراج کاربر با ریپلی|یوزرنیم|شناسه\n*_______________________*\n>[راهنمای بخش حذف ها](https://telegram.me/bang_team)\n*[/#!]delete managers* {حذف تمامی مدیران فرعی تنظیم شده برای گروه}\n*[/#!]delete welcome* {حذف پیغام خوش آمدگویی تنظیم شده برای گروه}\n*[/#!]delete bots* {حذف تمامی ربات های موجود در ابرگروه}\n*[/#!]delete silentlist* {حذف لیست سکوت کاربران}\n*[/#!]delete filterlist* {حذف لیست کلمات فیلتر شده در گروه}\n*_______________________*\n>[راهنمای بخش خوش آمدگویی](https://telegram.me/bang_team)\n*[/#!]welcome enable* --(فعال کردن پیغام خوش آمدگویی در گروه)\n*[/#!]welcome disable* --(غیرفعال کردن پیغام خوش آمدگویی در گروه)\n*[/#!]setwelcome text* --(تنظیم پیغام خوش آمدگویی جدید در گروه)\n*_______________________*\n>[راهنمای بخش فیلترگروه](https://telegram.me/bang_team)\n*[/#!]mutechat* --فعال کردن فیلتر تمامی گفتگو ها\n*[/#!]unmutechat* --غیرفعال کردن فیلتر تمامی گفتگو ها\n*[/#!]mutechat number(h|m|s)* --فیلتر تمامی گفتگو ها بر حسب زمان[ساعت|دقیقه|ثانیه]\n*_______________________*\n>[راهنمای دستورات حالت سکوت کاربران](https://telegram.me/bang_team)\n*[/#!]silentuser* @username|reply|user-id --افزودن کاربر به لیست سکوت با یوزرنیم|ریپلی|شناسه -فرد\n*[/#!]unsilentuser* @username|reply|user-id --افزودن کاربر به لیست سکوت با یوزرنیم|ریپلی|شناسه -فرد\n*[/#!]silentlist* --دریافت لیست کاربران حالت سکوت\n*_______________________*\n>[راهنمای بخش فیلتر-کلمات](https://telegram.me/bang_team)\n*[/#!]filter word --افزودن عبارت جدید به لیست کلمات فیلتر شده\n[/#!]unfilter word* --حذف عبارت جدید از لیست کلمات فیلتر شده\n*[/#!]filterlist* --دریافت لیست کلمات فیلتر شده\n*_______________________*\n>[راهنمای بخش تنظیم پیغام مکرر](https://telegram.me/bang_team)\n*[/#!]floodmax number* --تنظیم حساسیت نسبت به ارسال پیام مکرر\n*[/#!]floodtime* --تنظیم حساسیت نسبت به ارسال پیام مکرر برحسب زمان',keyboard)
@@ -454,10 +515,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'helpbot:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'helpbot:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`با عرض پوزش،در حال حاضر سیستم انتخابی غیرفعال میباشد.`',keyboard)
+              edit(q.inline_message_id,'`⛔️Sorry, currently the system of choice is disabled⛔️`',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('voicehelp') then
@@ -465,10 +526,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'helpbot:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'helpbot:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`با عرض پوزش،در حال حاضر سیستم انتخابی غیرفعال میباشد.`',keyboard)
+              edit(q.inline_message_id,'`⛔️Sorry, currently the system of choice is disabled⛔️`',keyboard)
             end
 							------------------------------------------------------------------------
 							------------------------------------------------------------------------
@@ -477,37 +538,43 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                  {text = 'لیست مالکین', callback_data = 'ownerlist:'..chat},{text = 'لیست مدیران', callback_data = 'managerlist:'..chat}
+                  {text = '👮صاحبان گروه👮', callback_data = 'ownerlist:'..chat}
                 },{
-				 {text = 'مشاهده قوانین', callback_data = 'showrules:'..chat},{text = 'لینک ابرگروه', callback_data = 'linkgroup:'..chat}
+				{text = '👨‍✈️مدیران گروه👨‍✈️', callback_data = 'managerlist:'..chat}
+                },{
+				 {text = '➰قوانین گروه➰', callback_data = 'showrules:'..chat}
 				 },{
-				 {text = 'کاربران مسدود شده', callback_data = 'banlist:'..chat},{text = 'کلمات فیلتر شده', callback_data = 'filterlistword:'..chat}
+				 {text = '🔗لینک گروه🔗', callback_data = 'linkgroup:'..chat}
+				 },{
+				 {text = '📒لیست کاربران مسدود⛔️', callback_data = 'banlist:'..chat}
 				  },{
-				 {text = 'کاربران حالت سکوت', callback_data = 'silentlistusers:'..chat}
+				  {text = '📒لیست کلمات فیلتر🚫', callback_data = 'filterlistword:'..chat}
+				  },{
+				 {text = '📒لیست کاربران میوت🔇', callback_data = 'silentlistusers:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`به بخش اطلاعات گروه خوش آمدید.`\n`از منوی زیر انتخاب کنید:`',keyboard)
+              edit(q.inline_message_id,'©اطلاعات گروه :',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('managerlist') then
                            local chat = '-'..q.data:match('(%d+)$')
 						   local list = redis:smembers(SUDO..'mods:'..chat)
-          local t = '`>لیست مدیران گروه:` \n\n'
+          local t = '*👨‍✈️مدیران گروه👇* \n\n'
           for k,v in pairs(list) do
-          t = t..k.." - *"..v.."*\n" 
+          t = t..k.." - `"..v.."`\n"
           end
-          t = t..'\n`>برای مشاهده کاربر از دستور زیر استفاده کنید`\n*/whois* `[آیدی کاربر]`'
+          t = t..'\nبرای مشاهده کاربر از دستور زیر استفاده کنید 👇\n/whois [آیدی کاربر]\nمثال 👇\n /whois 234458457'
           if #list == 0 then
-          t = '`>مدیریت برای این گروه ثبت نشده است.`'
+          t = '*👨‍✈️هیچ مدیری در گروه وجود ندارد❌*'
           end
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'مشاهده مدیران', callback_data = 'showmanagers:'..chat},{text = 'حذف لیست مدیران', callback_data = 'removemanagers:'..chat}
+                   {text = '👨‍✈️پاک سازی مدیران🗑', callback_data = 'removemanagers:'..chat}
 				   },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'groupinfo:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'groupinfo:'..chat}
 				}
 							}
               edit(q.inline_message_id, ''..t..'',keyboard)
@@ -518,30 +585,30 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'managerlist:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'managerlist:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`با عرض پوزش،در حال حاضر سیستم انتخابی غیرفعال میباشد.`',keyboard)
+              edit(q.inline_message_id,'`⛔️Sorry, currently the system of choice is disabled⛔️`',keyboard)
             end
 							------------------------------------------------------------------------
 							------------------------------------------------------------------------
 							if q.data:match('ownerlist') then
                            local chat = '-'..q.data:match('(%d+)$')
 						   local list = redis:smembers(SUDO..'owners:'..chat)
-          local t = '`>لیست مالکین گروه:` \n\n'
+          local t = '*👮لیست صاحبان گروه👇* \n\n'
           for k,v in pairs(list) do
-          t = t..k.." - *"..v.."*\n" 
+          t = t..k.." - `"..v.."`\n"
           end
-          t = t..'\n`>برای مشاهده کاربر از دستور زیر استفاده کنید`\n*/whois* `[آیدی کاربر]`'
+          t = t..'\nبرای مشاهده کاربر از دستور زیر استفاده کنید 👇\n/whois [آیدی کاربر]\nمثال 👇\n /whois 234458457'
           if #list == 0 then
-          t = '`>لیست مالکان گروه خالی میباشد!`'
+          t = '👮این گروه هیچ صاحبی ندارد❌'
           end
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'مشاهده مالکین', callback_data = 'showowners:'..chat},{text = 'حذف لیست مالکین', callback_data = 'removeowners:'..chat}
+                  {text = '👮پاک سازی صاحبان گروه❌', callback_data = 'removeowners:'..chat}
 				   },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'groupinfo:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'groupinfo:'..chat}
 				}
 							}
               edit(q.inline_message_id, ''..t..'',keyboard)
@@ -552,63 +619,63 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'ownerlist:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'ownerlist:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`با عرض پوزش،در حال حاضر سیستم انتخابی غیرفعال میباشد.`',keyboard)
+              edit(q.inline_message_id,'`⛔️Sorry, currently the system of choice is disabled⛔️`',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('showrules') then
                            local chat = '-'..q.data:match('(%d+)$')
 						   local rules = redis:get(SUDO..'grouprules'..chat)
           if not rules then
-          rules = '`>قوانین برای گروه تنظیم نشده است.`'
+          rules = '➰قوانینی وجود ندارد❌'
           end
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-							{text = 'حذف قوانین', callback_data = 'removerules:'..chat}
+							{text = '➰پاک سازی قوانین❌', callback_data = 'removerules:'..chat}
 				   },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'groupinfo:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'groupinfo:'..chat}
 				}
 							}
-              edit(q.inline_message_id, 'قوانین گروه:\n `'..rules..'`',keyboard)
+              edit(q.inline_message_id, '➰قوانین گروه👇\n\n `'..rules..'`',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('linkgroup') then
                            local chat = '-'..q.data:match('(%d+)$')
-						   local links = redis:get(SUDO..'grouplink'..chat) 
+						   local links = redis:get(SUDO..'grouplink'..chat)
           if not links then
-          links = '`>لینک ورود به گروه تنظیم نشده است.`\n`ثبت لینک جدید با دستور زیر امکان پذیر است:`\n*/setlink* `link`'
+          links = '🌐لینکی وجود ندارد❌'
           end
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-								{text = 'حذف لینک ابرگروه', callback_data = 'removegrouplink:'..chat}
+								{text = '🌐حذف لینک❌', callback_data = 'removegrouplink:'..chat}
 				   },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'groupinfo:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'groupinfo:'..chat}
 				}
 							}
-              edit(q.inline_message_id, '`لینک ورود به ابرگروه:`\n '..links..'',keyboard)
+              edit(q.inline_message_id, '🌐لینک گروه👇\n '..links..'',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('banlist') then
                            local chat = '-'..q.data:match('(%d+)$')
 						  local list = redis:smembers(SUDO..'banned'..chat)
-          local t = '`>لیست افراد مسدود شده از گروه:` \n\n'
+          local t = '*⛔️لیست مسدود شدگان👇*\n\n'
           for k,v in pairs(list) do
-          t = t..k.." - *"..v.."*\n" 
+          t = t..k.." - _"..v.."_\n"
           end
-          t = t..'\n`>برای مشاهده کاربر از دستور زیر استفاده کنید`\n*/whois* `[آیدی کاربر]`'
+          t = t..'\nبرای مشاهده کاربر از دستور زیر استفاده کنید 👇\n/whois [آیدی کاربر]\nمثال 👇\n /whois 234458457'
           if #list == 0 then
-          t = '`>لیست افراد مسدود شده از گروه خالی میباشد.`'
+          t = '*⛔️هیچ کاربر مسدودی در این گروه وجود ندارد❌*'
           end
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'مشاهده کاربران', callback_data = 'showusers:'..chat},{text = 'حذف لیست', callback_data = 'removebanlist:'..chat}
+                   {text = '⛔️پاکسازی کاربران مسدود❌', callback_data = 'removebanlist:'..chat}
 				   },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'groupinfo:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'groupinfo:'..chat}
 				}
 							}
               edit(q.inline_message_id, ''..t..'',keyboard)
@@ -619,29 +686,29 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'banlist:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'banlist:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`با عرض پوزش،در حال حاضر سیستم انتخابی غیرفعال میباشد.`',keyboard)
+              edit(q.inline_message_id,'`⛔️Sorry, currently the system of choice is disabled⛔️`',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('silentlistusers') then
                            local chat = '-'..q.data:match('(%d+)$')
 						  local list = redis:smembers(SUDO..'mutes'..chat)
-          local t = '`>لیست کاربران حالت سکوت` \n\n'
+          local t = '🔇لیست کاربران سکوت شده👇 \n\n'
           for k,v in pairs(list) do
-          t = t..k.." - *"..v.."*\n" 
+          t = t..k.." - _"..v.."_\n"
           end
-          t = t..'\n`>برای مشاهده کاربر از دستور زیر استفاده کنید`\n*/whois* `[آیدی کاربر]`'
+          t = t..'\nبرای مشاهده کاربر از دستور زیر استفاده کنید 👇\n/whois [آیدی کاربر]\nمثال 👇\n /whois 234458457'
           if #list == 0 then
-          t = '`>لیست کاربران حالت سکوت خالی میباشد!`'
+          t = '🔇هیچ کاربری در لیست سکوت وجود ندارد❌'
           end
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'مشاهده کاربران', callback_data = 'showusersmutelist:'..chat},{text = 'حذف لیست', callback_data = 'removesilentlist:'..chat}
+                   {text = '🔇پاکسازی لیست سکوت❌', callback_data = 'removesilentlist:'..chat}
 				   },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'groupinfo:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'groupinfo:'..chat}
 				}
 							}
               edit(q.inline_message_id, ''..t..'',keyboard)
@@ -652,28 +719,28 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'silentlistusers:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'silentlistusers:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`با عرض پوزش،در حال حاضر سیستم انتخابی غیرفعال میباشد.`',keyboard)
+              edit(q.inline_message_id,'`⛔️Sorry, currently the system of choice is disabled⛔️`',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('filterlistword') then
                            local chat = '-'..q.data:match('(%d+)$')
 						   local list = redis:smembers(SUDO..'filters:'..chat)
-          local t = '`>لیست کلمات فیلتر شده در گروه:` \n\n'
+          local t = '📝کلمات فیلتر شده👇 \n\n'
           for k,v in pairs(list) do
-          t = t..k.." - *"..v.."*\n" 
+          t = t..k.." - _"..v.."_\n"
           end
           if #list == 0 then
-          t = '`>لیست کلمات فیلتر شده خالی میباشد`'
+          t = '📝لیست کلمات فیلتر شده خالی است❌'
           end
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'حذف لیست', callback_data = 'removefilterword:'..chat}
+                   {text = '📝پاکسازی فیلتر لیست❌', callback_data = 'removefilterword:'..chat}
 				   },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'groupinfo:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'groupinfo:'..chat}
 				}
 							}
               edit(q.inline_message_id, ''..t..'',keyboard)
@@ -684,12 +751,12 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-				 {text = '❌خیر', callback_data = 'bgdbdfddhdfhdyumrurmtu:'..chat},{text = '✅بله', callback_data = 'hjwebrjb53j5bjh3:'..chat}
+				 {text = '❌خیر❌', callback_data = 'bgdbdfddhdfhdyumrurmtu:'..chat},{text = '✅بله✅', callback_data = 'hjwebrjb53j5bjh3:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'managerlist:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'managerlist:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'هشدار!\n`با انجام این عمل لیست مدیران گروه حذف میگردد.`\n`آیا اطمیان دارید؟`',keyboard)
+              edit(q.inline_message_id,'⚜️آیا از انجام این عملیات مطمین هستید❓',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('hjwebrjb53j5bjh3') then
@@ -698,10 +765,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>لیست مدیران گروه با موفقیت بازنشانی شد.`',keyboard)
+              edit(q.inline_message_id,'⚜️عملیات با موفقیت انجام شد✅',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('bgdbdfddhdfhdyumrurmtu') then
@@ -709,10 +776,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`درخواست شما لغو گردید.`',keyboard)
+              edit(q.inline_message_id,'⚜️عملیات لغو شد🚫',keyboard)
             end
 						--########################################################################--
 						if q.data:match('removeowners') then
@@ -720,12 +787,12 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-				 {text = '❌خیر', callback_data = 'ncxvnfhfherietjbriurti:'..chat},{text = '✅بله', callback_data = 'ewwerwerwer4334b5343:'..chat}
+				 {text = '❌خیر❌', callback_data = 'ncxvnfhfherietjbriurti:'..chat},{text = '✅بله✅', callback_data = 'ewwerwerwer4334b5343:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'ownerlist:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'ownerlist:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'هشدار!\n`با انجام این عمل لیست مالکین گروه حذف میگردد.`\n`آیا اطمیان دارید؟`',keyboard)
+              edit(q.inline_message_id,'⚜️آیا از انجام این عملیات مطمین هستید❓',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('ewwerwerwer4334b5343') then
@@ -734,10 +801,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>لیست مالکین گروه با موفقیت بازنشانی گردید.`',keyboard)
+              edit(q.inline_message_id,'⚜️عملیات با موفقیت انجام شد✅',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('ncxvnfhfherietjbriurti') then
@@ -745,10 +812,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`درخواست شما لغو گردید.`',keyboard) 
+              edit(q.inline_message_id,'⚜️عملیات لغو شد🚫',keyboard)
             end
 							--########################################################################--
 							if q.data:match('removerules') then
@@ -756,12 +823,12 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-				 {text = '❌خیر', callback_data = 'as12310fklfkmgfvm:'..chat},{text = '✅بله', callback_data = '3kj5g34ky6g34uy:'..chat}
+				 {text = '❌خیر❌', callback_data = 'as12310fklfkmgfvm:'..chat},{text = '✅بله✅', callback_data = '3kj5g34ky6g34uy:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'showrules:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'showrules:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'هشدار!\n`با انجام این عمل متن قوانین تنظیم شده گروه حذف میگردد.`\n`آیا اطمیان دارید؟`',keyboard)
+              edit(q.inline_message_id,'⚜️آیا از انجام این عملیات مطمین هستید❓',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('3kj5g34ky6g34uy') then
@@ -770,10 +837,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>قوانین گروه با موفقیت بازنشانی گردید.`',keyboard)
+              edit(q.inline_message_id,'⚜️عملیات با موفقیت انجام شد✅',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('as12310fklfkmgfvm') then
@@ -781,22 +848,22 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`درخواست شما لغو گردید.`',keyboard) 
+              edit(q.inline_message_id,'⚜️عملیات لغو شد🚫',keyboard)
             end
 							--########################################################################--
 							if q.data:match('removegrouplink') then
                            local chat = '-'..q.data:match('(%d+)$')
-						   redis:del(SUDO..'grouplink'..chat) 
+						   redis:del(SUDO..'grouplink'..chat)
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'linkgroup:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'linkgroup:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>لینک ثبت شده با موفقیت بازنشانی گردید.`',keyboard)
+              edit(q.inline_message_id,'🔗لینک گروه با موفقیت حذف شد✅',keyboard)
             end
 							--########################################################################--
 								if q.data:match('removebanlist') then
@@ -804,12 +871,12 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-				 {text = '❌خیر', callback_data = 'sudfewbhwebr9983243:'..chat},{text = '✅بله', callback_data = 'erwetrrefgfhfdhretre:'..chat}
+				 {text = '❌خیر❌', callback_data = 'sudfewbhwebr9983243:'..chat},{text = '✅بله✅', callback_data = 'erwetrrefgfhfdhretre:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'banlist:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'banlist:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'هشدار!\n`با انجام این عمل لیست کاربران مسدود شده از گروه حذف میگردد.`\n`آیا اطمیان دارید؟`',keyboard)
+              edit(q.inline_message_id,'⚜️آیا از انجام این عملیات مطمین هستید❓',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('erwetrrefgfhfdhretre') then
@@ -818,10 +885,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>لیست کاربران مسدود شده از گروه با موفقیت بازنشانی گردید.`',keyboard)
+              edit(q.inline_message_id,'⚜️عملیات با موفقیت انجام شد✅',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('sudfewbhwebr9983243') then
@@ -829,10 +896,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`درخواست شما لغو گردید.`',keyboard) 
+              edit(q.inline_message_id,'⚜️عملیات لغو شد🚫',keyboard)
             end
 							--########################################################################--
 								if q.data:match('removesilentlist') then
@@ -840,12 +907,12 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-				 {text = '❌خیر', callback_data = 'sadopqwejjbkvw90892:'..chat},{text = '✅بله', callback_data = 'ncnvdifeqrhbksdgfid47:'..chat}
+				 {text = '❌خیر❌', callback_data = 'sadopqwejjbkvw90892:'..chat},{text = '✅بله✅', callback_data = 'ncnvdifeqrhbksdgfid47:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'silentlistusers:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'silentlistusers:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'هشدار!\n`با انجام این عمل لیست کاربران حالت سکوت گروه حذف میگردد.`\n`آیا اطمیان دارید؟`',keyboard)
+              edit(q.inline_message_id,'⚜️آیا از انجام این عملیات مطمین هستید❓',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('ncnvdifeqrhbksdgfid47') then
@@ -854,10 +921,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>لیست افراد کاربران لیست سکوت با موفقیت حذف گردید.`',keyboard)
+              edit(q.inline_message_id,'⚜️عملیات با موفقیت انجام شد✅',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('sadopqwejjbkvw90892') then
@@ -865,10 +932,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`درخواست شما لغو گردید.`',keyboard) 
+              edit(q.inline_message_id,'⚜️عملیات لغو شد🚫',keyboard)
             end
 							--########################################################################--
 							if q.data:match('removefilterword') then
@@ -876,12 +943,12 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-				 {text = '❌خیر', callback_data = 'ncxvbcusxsokd9374uid:'..chat},{text = '✅بله', callback_data = 'erewigfuwebiebfjdskfbdsugf:'..chat}
+				 {text = '❌خیر❌', callback_data = 'ncxvbcusxsokd9374uid:'..chat},{text = '✅بله✅', callback_data = 'erewigfuwebiebfjdskfbdsugf:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'filterlistword:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'filterlistword:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'هشدار!\n`با انجام این عمل لیست تمامی کلمات فیلترشده گروه حذف میگردد.`\n`آیا اطمیان دارید؟`',keyboard)
+              edit(q.inline_message_id,'⚜️آیا از انجام این عملیات مطمین هستید❓',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('erewigfuwebiebfjdskfbdsugf') then
@@ -890,10 +957,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>تمامی کلمات فیلتر شده با موفقیت حذف گردیدند.`',keyboard)
+              edit(q.inline_message_id,'⚜️عملیات با موفقیت انجام شد✅',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('ncxvbcusxsokd9374uid') then
@@ -901,10 +968,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`درخواست شما لغو گردید.`',keyboard) 
+              edit(q.inline_message_id,'⚜️عملیات لغو شد🚫',keyboard)
             end
 							--########################################################################--
 							--#####################################################################--
@@ -919,7 +986,7 @@ local hash = SUDO..'settings:'..chat..':'..value
                 },{
 				{text = 'مدیریت حرفه ای گروه', callback_data = 'herfeiimanage:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'fahedsale:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '🔙 برگشت به منوی قبلی💠', callback_data = 'fahedsale:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`در این بخش شما میتوانید نسبت به خرید سرویس/طرح جدید اقدام کنید.`\n`سرویس مورد نظر خود را انتخاب کنید:`',keyboard)
@@ -932,10 +999,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 								{
 								{text = 'طرح ها و تعرفه ها', callback_data = 'tarhvatarefe:'..chat},{text = 'بررسی قابلیت ها', callback_data = 'baresiqabeliyat:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'salegroup:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'salegroup:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>سرویس انتخابی شما: [مدیریت معمولی گروه].`\n`از منوی زیر انتخاب کنید:`',keyboard) 
+              edit(q.inline_message_id,'`>سرویس انتخابی شما: [مدیریت معمولی گروه].`\n`از منوی زیر انتخاب کنید:`',keyboard)
             end
 							------------------------------------------------------------------------
 							if q.data:match('promanage') then
@@ -946,7 +1013,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 								{
 								{text = 'طرح ها و تعرفه ها', callback_data = 'tarhpro:'..chat},{text = 'بررسی قابلیت ها', callback_data = 'pishrafteberesi:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'salegroup:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'salegroup:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`>سرویس انتخابی شما: [مدیریت پیشرفته گروه].`\n`از منوی زیر انتخاب کنید:`',keyboard)
@@ -959,10 +1026,10 @@ local hash = SUDO..'settings:'..chat..':'..value
 								{
 								{text = 'طرح ها و تعرفه ها', callback_data = 'herfetarh:'..chat},{text = 'بررسی قابلیت ها', callback_data = 'qabeliyarherfeii:'..chat}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'salegroup:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'salegroup:'..chat}
 				}
 							}
-              edit(q.inline_message_id,'`>سرویس انتخابی شما: [مدیریت حرفه ای گروه].`\n`از منوی زیر انتخاب کنید:`',keyboard) 
+              edit(q.inline_message_id,'`>سرویس انتخابی شما: [مدیریت حرفه ای گروه].`\n`از منوی زیر انتخاب کنید:`',keyboard)
             end
 							--********************************************************************--
 							if q.data:match('tarhpro') then
@@ -970,7 +1037,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'promanage:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'promanage:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`قیمت طرح های مربوط به این ربات:`\n`ماهانه(30 الی 31 روز کامل)` >  *14900*\n`سالانه(365 روز کامل)` > *34000*\n`دائمی/مادام العمر(نامحدود روز)` > *45000*\n`تمامی قیمت ها به` تومان `میباشد.`',keyboard)
@@ -981,7 +1048,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'normalmanage:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'normalmanage:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`قیمت طرح های مربوط به این ربات:`\n`ماهانه(30 الی 31 روز کامل)` >  *9900*\n`سالانه(365 روز کامل)` > *23000*\n`دائمی/مادام العمر(نامحدود روز)` > *35000*\n`تمامی قیمت ها به` تومان `میباشد.`',keyboard)
@@ -992,7 +1059,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'herfeiimanage:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'herfeiimanage:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`قیمت طرح های مربوط به این ربات:`\n`ماهانه(30 الی 31 روز کامل)` >  *16900*\n`سالانه(365 روز کامل)` > *37500*\n`دائمی/مادام العمر(نامحدود روز)` > *49000*\n`تمامی قیمت ها به` تومان `میباشد.`',keyboard)
@@ -1003,7 +1070,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'promanage:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'promanage:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`بررسی قابلیت های این سرویس:`\nشرح قابلیت ها: (سرعت بالا در انجام دستورات و موارد تنظیم شده برای گروه خود--دقت در انجام دستورات داده شده: 100%--رابط کاربری فوق العاده و دارای قابلیت و متود های جدید تلگرام(توضیحات بیشتر در پست های بالا موجود میباشد.))',keyboard)
@@ -1014,7 +1081,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'normalmanage:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙 Back', callback_data = 'normalmanage:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`بررسی قابلیت های این سرویس:`\nشرح قابلیت ها: (سرعت پایین تر نسبت به ربات بالا(به دلیل زیاد شدن آمار گروه های فعال ربات--عمر ربات: 26 ماه)--دقت در انجام دستورات داده شده: 96%--رابط کاربری فوق العاده و دارای قابلیت های پیشرفته و نسبتا جدید)',keyboard)
@@ -1025,7 +1092,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = 'صفحه قبلی ◀️', callback_data = 'herfeiimanage:'..chat}
+                   {text = '🔙 Back To Menu', callback_data = 'firstmenu:'..chat},{text = '🔙Back', callback_data = 'herfeiimanage:'..chat}
 				}
 							}
               edit(q.inline_message_id,'`بررسی قابلیت های این سرویس:`\nشرح قابلیت ها: (سرعت بالا در انجام دستورات و موارد تنظیم شده برای گروه خود--دقت در انجام دستورات داده شده: 100%--رابط کاربری فوق العاده و دارای قابلیت و متود های جدید تلگرام(توضیحات بیشتر در پست های بالا موجود + مدیریت حرفه ای(دارای پنل مدیریتی خودکار و بدون نیاز به ارسال دستور!)',keyboard)
@@ -1039,7 +1106,7 @@ local hash = SUDO..'settings:'..chat..':'..value
 							local function is_lock(chat,value)
 local hash = SUDO..'settings:'..chat..':'..value
  if redis:get(hash) then
-    return true 
+    return true
     else
     return false
     end
@@ -1047,19 +1114,27 @@ local hash = SUDO..'settings:'..chat..':'..value
 
 local function getsettings(value)
        if value == "charge" then
-       local ex = redis:ttl("charged:"..chat)
-       if ex == -1 then
-        return "نامحدود!"
-       else
-        local d = math.floor(ex / day ) + 1
-        return "نامحدود!"
-       end
-        elseif value == 'muteall' then
+	   local exp = tonumber(redis:get('bot:charge:'..chat))
+                if exp == 0 then
+				exp_dat = 'Unlimited'
+				        return exp_dat
+				else
+			local now = tonumber(os.time())
+      if not now then 
+      now = 0 
+      end
+      if not exp then
+      exp = 0
+      end
+			exp_dat = (math.floor((tonumber(exp) - tonumber(now)) / 86400) + 1)   
+        return exp_dat.."Day"	
+end
+elseif value == 'muteall' then
 				local h = redis:ttl(SUDO..'muteall'..chat)
           if h == -1 then
-        return '🔐'
+        return '🔒 قفل 🚫'
 				elseif h == -2 then
-        return '🔓'
+        return '🔓 آزاد ⭕️'
        else
         return "تا ["..h.."] ثانیه دیگر فعال است"
        end
@@ -1071,55 +1146,69 @@ local function getsettings(value)
           return 'غیرفعال'
           end
         elseif value == 'spam' then
-       local hash = redis:hget("flooding:settings:"..chat, "flood")
+       local hash = redis:get(SUDO..'settings:flood'..chat)
         if hash then
-           if redis:hget("flooding:settings:"..chat, "flood") == 'kick' then
-         return '?Kick?'
-             elseif redis:hget("flooding:settings:"..chat, "flood") == 'ban' then
-              return '?Ban?'
-              elseif redis:hget("flooding:settings:"..chat, "flood") == 'mute' then
-              return '??Silent??'
+            if redis:get(SUDO..'settings:flood'..chat) == 'kick' then
+         return '❎اخراج❎'
+             elseif redis:get(SUDO..'settings:flood'..chat) == 'ban' then
+              return '❌مسدود❌'
+               elseif redis:get(SUDO..'settings:flood'..chat) == 'mute' then
+              return '🔇سکوت🔇'
               end
           else
-          return '🔓'
+          return '🔓 آزاد ⭕️'
+          end
+		  
+		          elseif value == 'warn' then
+       local hash = redis:hget("warn:settings:"..chat ,"swarn")
+        if hash then
+            if redis:hget("warn:settings:"..chat ,"swarn") == 'kick' then
+         return '❎اخراج❎'
+             elseif redis:hget("warn:settings:"..chat ,"swarn") == 'ban' then
+              return '❌مسدود❌'
+               elseif redis:hget("warn:settings:"..chat ,"swarn") == 'mute' then
+              return '🔇سکوت🔇'
+              end
+          else
+          return '🔓 آزاد ⭕️'
           end
         elseif is_lock(chat,value) then
-          return '🔐'
+          return '🔒 قفل 🚫'
           else
-          return '🔓'
+          return '🔓 آزاد ⭕️'
           end
         end
               local keyboard = {}
             	keyboard.inline_keyboard = {
 	            	{
-                 {text=getsettings('photo'),callback_data=chat..':lock photo'}, {text = 'فیلتر تصاویر', callback_data = chat..'_photo'}
+                {text=getsettings('photo'),callback_data=chat..':lock photo'}, {text = '⬅️ تصاویر 🌆', callback_data = chat..'_photo'}
                 },{
-                 {text=getsettings('video'),callback_data=chat..':lock video'}, {text = 'فیلتر ویدئو', callback_data = chat..'_video'}
+                 {text=getsettings('video'),callback_data=chat..':lock video'}, {text = '⬅️ فیلم 🎥', callback_data = chat..'_video'}
                 },{
-                 {text=getsettings('audio'),callback_data=chat..':lock audio'}, {text = 'فیلتر صدا', callback_data = chat..'_audio'}
+                 {text=getsettings('audio'),callback_data=chat..':lock audio'}, {text = '⬅️  صدا 🎤', callback_data = chat..'_audio'}
                 },{
-                 {text=getsettings('gif'),callback_data=chat..':lock gif'}, {text = 'فیلتر تصاویر متحرک', callback_data = chat..'_gif'}
+                 {text=getsettings('gif'),callback_data=chat..':lock gif'}, {text = '⬅️ گیف 🎇', callback_data = chat..'_gif'}
                 },{
-                 {text=getsettings('music'),callback_data=chat..':lock music'}, {text = 'فیلتر آهنگ', callback_data = chat..'_music'}
+                 {text=getsettings('music'),callback_data=chat..':lock music'}, {text = '⬅️ موزیک 🎵', callback_data = chat..'_music'}
                 },{
-                  {text=getsettings('file'),callback_data=chat..':lock file'},{text = 'فیلتر فایل', callback_data = chat..'_file'}
+                  {text=getsettings('file'),callback_data=chat..':lock file'},{text = '⬅️ فایل 📂', callback_data = chat..'_file'}
                 },{
-                  {text=getsettings('link'),callback_data=chat..':lock link'},{text = 'قفل ارسال لینک', callback_data = chat..'_link'}
+                  {text=getsettings('link'),callback_data=chat..':lock link'},{text = '⬅️ لینک 🌐', callback_data = chat..'_link'}
                 },{
-                 {text=getsettings('sticker'),callback_data=chat..':lock sticker'}, {text = 'فیلتر برچسب', callback_data = chat..'_sticker'}
+                 {text=getsettings('sticker'),callback_data=chat..':lock sticker'}, {text = '⬅️ استیکر 🖼', callback_data = chat..'_sticker'}
                 },{
-                  {text=getsettings('text'),callback_data=chat..':lock text'},{text = 'فیلتر متن', callback_data = chat..'_text'}
+                  {text=getsettings('text'),callback_data=chat..':lock text'},{text = '⬅️ متن 📝', callback_data = chat..'_text'}
                 },{
-                  {text=getsettings('pin'),callback_data=chat..':lock pin'},{text = 'قفل پیغام پین شده', callback_data = chat..'_pin'}
+                  {text=getsettings('pin'),callback_data=chat..':lock pin'},{text = '⬅️ پین 🌀', callback_data = chat..'_pin'}
                 },{
-                 {text=getsettings('username'),callback_data=chat..':lock username'}, {text = 'فیلتر یوزرنیم', callback_data = chat..'_username'}
+                 {text=getsettings('username'),callback_data=chat..':lock username'}, {text = '⬅️ یوزنیم 🆔', callback_data = chat..'_username'}
                 },{
-                  {text=getsettings('contact'),callback_data=chat..':lock contact'},{text = 'فیلتر مخاطبین', callback_data = chat..'_contact'}
+                  {text=getsettings('contact'),callback_data=chat..':lock contact'},{text = '⬅️ مخاطب 📞', callback_data = chat..'_contact'}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = '▶️ صفحه بعدی', callback_data = 'next_page:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '2️⃣صفحه دوم ➡️', callback_data = 'next_page:'..chat}
                 }
-							}
-            edit(q.inline_message_id,'تنظیمات-ابرگروه(فیلترها):',keyboard)
+              }
+            edit(q.inline_message_id,'_⚙️ تنظیمات ⚙️_\n`👈صفحه اول 1️⃣`\n@BGTeaM',keyboard)
             end
 			------------------------------------------------------------------------
             if q.data:match('left_page') then
@@ -1134,159 +1223,210 @@ local hash = SUDO..'settings:'..chat..':'..value
  end
 local function getsettings(value)
        if value == "charge" then
-       local ex = redis:ttl("charged:"..chat)
-       if ex == -1 then
-        return "نامحدود!"
-       else
-        local d = math.floor(ex / day ) + 1
-        return "نامحدود!"
-       end
+	   local exp = tonumber(redis:get('bot:charge:'..chat))
+                if exp == 0 then
+				exp_dat = 'Unlimited'
+				        return exp_dat
+				else
+			local now = tonumber(os.time())
+      if not now then 
+      now = 0 
+      end
+      if not exp then
+      exp = 0
+      end
+			exp_dat = (math.floor((tonumber(exp) - tonumber(now)) / 86400) + 1)   
+        return exp_dat.."Day"	
+end
         elseif value == 'spam' then
-       local hash = redis:hget("flooding:settings:"..chat, "flood")
+       local hash = redis:get(SUDO..'settings:flood'..chat)
         if hash then
-           if redis:hget("flooding:settings:"..chat, "flood") == 'kick' then
-         return '?Kick?'
-             elseif redis:hget("flooding:settings:"..chat, "flood") == 'ban' then
-              return '?Ban?'
-              elseif redis:hget("flooding:settings:"..chat, "flood") == 'mute' then
-              return '??Silent??'
+            if redis:get(SUDO..'settings:flood'..chat) == 'kick' then
+         return '❎اخراج❎'
+             elseif redis:get(SUDO..'settings:flood'..chat) == 'ban' then
+              return '❌مسدود❌'
+               elseif redis:get(SUDO..'settings:flood'..chat) == 'mute' then
+              return '🔇سکوت🔇'
               end
           else
-          return '🔓'
+          return '🔓 آزاد ⭕️'
+          end
+		  
+		          elseif value == 'warn' then
+       local hash = redis:hget("warn:settings:"..chat ,"swarn")
+        if hash then
+            if redis:hget("warn:settings:"..chat ,"swarn") == 'kick' then
+         return '❎اخراج❎'
+             elseif redis:hget("warn:settings:"..chat ,"swarn") == 'ban' then
+              return '❌مسدود❌'
+               elseif redis:hget("warn:settings:"..chat ,"swarn") == 'mute' then
+              return '🔇سکوت🔇'
+              end
+          else
+          return '🔓 آزاد ⭕️'
           end
         elseif is_lock(chat,value) then
-          return '🔐'
+          return '🔒 قفل 🚫'
           else
-          return '🔓'
+          return '🔓 آزاد ⭕️'
           end
         end
 							local keyboard = {}
 							keyboard.inline_keyboard = {
 									{
-                 {text=getsettings('photo'),callback_data=chat..':lock photo'}, {text = 'فیلتر تصاویر', callback_data = chat..'_photo'}
+                  {text=getsettings('photo'),callback_data=chat..':lock photo'}, {text = '⬅️ تصاویر 🌆', callback_data = chat..'_photo'}
                 },{
-                 {text=getsettings('video'),callback_data=chat..':lock video'}, {text = 'فیلتر ویدئو', callback_data = chat..'_video'}
+                 {text=getsettings('video'),callback_data=chat..':lock video'}, {text = '⬅️ فیلم 🎥', callback_data = chat..'_video'}
                 },{
-                 {text=getsettings('audio'),callback_data=chat..':lock audio'}, {text = 'فیلتر صدا', callback_data = chat..'_audio'}
+                 {text=getsettings('audio'),callback_data=chat..':lock audio'}, {text = '⬅️  صدا 🎤', callback_data = chat..'_audio'}
                 },{
-                 {text=getsettings('gif'),callback_data=chat..':lock gif'}, {text = 'فیلتر تصاویر متحرک', callback_data = chat..'_gif'}
+                 {text=getsettings('gif'),callback_data=chat..':lock gif'}, {text = '⬅️ گیف 🎇', callback_data = chat..'_gif'}
                 },{
-                 {text=getsettings('music'),callback_data=chat..':lock music'}, {text = 'فیلتر آهنگ', callback_data = chat..'_music'}
+                 {text=getsettings('music'),callback_data=chat..':lock music'}, {text = '⬅️ موزیک 🎵', callback_data = chat..'_music'}
                 },{
-                  {text=getsettings('file'),callback_data=chat..':lock file'},{text = 'فیلتر فایل', callback_data = chat..'_file'}
+                  {text=getsettings('file'),callback_data=chat..':lock file'},{text = '⬅️ فایل 📂', callback_data = chat..'_file'}
                 },{
-                  {text=getsettings('link'),callback_data=chat..':lock link'},{text = 'قفل ارسال لینک', callback_data = chat..'_link'}
+                  {text=getsettings('link'),callback_data=chat..':lock link'},{text = '⬅️ لینک 🌐', callback_data = chat..'_link'}
                 },{
-                 {text=getsettings('sticker'),callback_data=chat..':lock sticker'}, {text = 'فیلتر برچسب', callback_data = chat..'_sticker'}
+                 {text=getsettings('sticker'),callback_data=chat..':lock sticker'}, {text = '⬅️ استیکر 🖼', callback_data = chat..'_sticker'}
                 },{
-                  {text=getsettings('text'),callback_data=chat..':lock text'},{text = 'فیلتر متن', callback_data = chat..'_text'}
+                  {text=getsettings('text'),callback_data=chat..':lock text'},{text = '⬅️ متن 📝', callback_data = chat..'_text'}
                 },{
-                  {text=getsettings('pin'),callback_data=chat..':lock pin'},{text = 'قفل پیغام پین شده', callback_data = chat..'_pin'}
+                  {text=getsettings('pin'),callback_data=chat..':lock pin'},{text = '⬅️ پین 🌀', callback_data = chat..'_pin'}
                 },{
-                 {text=getsettings('username'),callback_data=chat..':lock username'}, {text = 'فیلتر یوزرنیم', callback_data = chat..'_username'}
+                 {text=getsettings('username'),callback_data=chat..':lock username'}, {text = '⬅️ یوزنیم 🆔', callback_data = chat..'_username'}
                 },{
-                  {text=getsettings('contact'),callback_data=chat..':lock contact'},{text = 'فیلتر مخاطبین', callback_data = chat..'_contact'}
+                  {text=getsettings('contact'),callback_data=chat..':lock contact'},{text = '⬅️ مخاطب 📞', callback_data = chat..'_contact'}
                 },{
-                   {text = 'بازگشت به منوی اصلی ◀️', callback_data = 'firstmenu:'..chat},{text = '▶️ صفحه بعدی', callback_data = 'next_page:'..chat}
+                   {text = '🔙 برگشت به منوی اصلی💠', callback_data = 'firstmenu:'..chat},{text = '2️⃣صفحه دوم ➡️', callback_data = 'next_page:'..chat}
                 }
-							}
-              edit(q.inline_message_id,'تنظیمات-ابرگروه(بخش1):',keyboard)
+              }
+            edit(q.inline_message_id,'_⚙️ تنظیمات ⚙️_\n`👈 برگشتیم به صفحه اول 1 ️⃣`\n@BGTeaM',keyboard)
             end
 						if q.data:match('next_page') then
 							local chat = '-'..q.data:match('(%d+)$')
 							local function is_lock(chat,value)
 local hash = SUDO..'settings:'..chat..':'..value
  if redis:get(hash) then
-    return true 
+    return true
     else
     return false
     end
   end
 local function getsettings(value)
         if value == "charge" then
-       local ex = redis:ttl("charged:"..chat)
-       if ex == -1 then
-        return "نامحدود!"
-       else
-        local d = math.floor(ex / day ) + 1
-        return "نامحدود!"
-       end
+	   local exp = tonumber(redis:get('bot:charge:'..chat))
+                if exp == 0 then
+				exp_dat = 'Unlimited'
+				        return exp_dat
+				else
+			local now = tonumber(os.time())
+      if not now then 
+      now = 0 
+      end
+      if not exp then
+      exp = 0
+      end
+			exp_dat = (math.floor((tonumber(exp) - tonumber(now)) / 86400) + 1)   
+        return exp_dat.."Day"
+end
         elseif value == 'muteall' then
         local h = redis:ttl(SUDO..'muteall'..chat)
        if h == -1 then
-        return '🔐'
-				elseif h == -2 then
-			  return '🔓'
+        return '🔒 قفل 🚫'
+    elseif h == -2 then
+     return '🔓 آزاد ⭕️'
        else
         return "تا ["..h.."] ثانیه دیگر فعال است"
        end
         elseif value == 'welcome' then
         local hash = redis:get(SUDO..'status:welcome:'..chat)
         if hash == 'enable' then
-         return 'فعال'
+         return '✅فعال✅'
           else
-          return 'غیرفعال'
+          return '❌غیر فعال❌'
           end
         elseif value == 'spam' then
        local hash = redis:hget("flooding:settings:"..chat, "flood")
         if hash then
            if redis:hget("flooding:settings:"..chat, "flood") == 'kick' then
-         return '?Kick?'
+         return '❎اخراج❎'
              elseif redis:hget("flooding:settings:"..chat, "flood") == 'ban' then
-              return '?Ban?'
+              return '❌مسدود❌'
               elseif redis:hget("flooding:settings:"..chat, "flood") == 'mute' then
-              return '??Silent??'
+              return '🔇سکوت🔇'
               end
           else
-          return '🔓'
+          return '🔓 آزاد ⭕️'
           end
-        elseif is_lock(chat,value) then
-          return '🔐'
+            elseif value == 'warn' then
+       local hash = redis:hget("warn:settings:"..chat, "swarn")
+        if hash then
+           if redis:hget("warn:settings:"..chat, "swarn") == 'kick' then
+         return '❎اخراج❎'
+             elseif redis:hget("warn:settings:"..chat, "swarn") == 'ban' then
+              return '❌مسدود❌'
+              elseif redis:hget("warn:settings:"..chat, "swarn") == 'mute' then
+              return '🔇سکوت🔇'
+              end
           else
-          return '🔓'
+          return '🔓 آزاد ⭕️'
+          end
+    
+        elseif is_lock(chat,value) then
+          return '🔒 قفل 🚫'
+          else
+          return '🔓 آزاد ⭕️'
           end
         end
 									local MSG_MAX = (redis:hget("flooding:settings:"..chat,"floodmax") or 5)
+									local WARN_MAX = (redis:hget("warn:settings:"..chat,"warnmax") or 3)
 								local TIME_MAX = (redis:hget("flooding:settings:"..chat,"floodtime") or 3)
          		local keyboard = {}
 							keyboard.inline_keyboard = {
 								{
-                  {text=getsettings('forward'),callback_data=chat..':lock forward'},{text = 'فیلتر فوروارد', callback_data = chat..'_forward'}
+                  {text=getsettings('forward'),callback_data=chat..':lock forward'},{text = '⬅️ فروارد 📎', callback_data = chat..'_forward'}
                 },{
-                  {text=getsettings('bot'),callback_data=chat..':lock bot'},{text = 'قفل ورود ربات(API)', callback_data = chat..'_bot'}
+                  {text=getsettings('bot'),callback_data=chat..':lock bot'},{text = '⬅️ بات 📡', callback_data = chat..'_bot'}
                 },{
-                  {text=getsettings('game'),callback_data=chat..':lock game'},{text = 'فیلتر بازی(inline)', callback_data = chat..'_game'}
+                  {text=getsettings('game'),callback_data=chat..':lock game'},{text = '⬅️ بازی 👣', callback_data = chat..'_game'}
                 },{
-                  {text=getsettings('persian'),callback_data=chat..':lock persian'},{text = 'فیلتر گفتمان فارسی', callback_data = chat..'_persian'}
+                  {text=getsettings('persian'),callback_data=chat..':lock persian'},{text = '⬅️ فارسی 🇹🇯', callback_data = chat..'_persian'}
                 },{
-                  {text=getsettings('english'),callback_data=chat..':lock english'},{text = 'فیلتر گفتمان انگلیسی', callback_data = chat..'_english'}
+                  {text=getsettings('english'),callback_data=chat..':lock english'},{text = '⬅️ انگلیسی 🇬🇧', callback_data = chat..'_english'}
                 },{
-                  {text=getsettings('keyboard'),callback_data=chat..':lock keyboard'},{text = 'قفل دکمه شیشه ای', callback_data = chat..'_keyboard'}
+                  {text=getsettings('keyboard'),callback_data=chat..':lock keyboard'},{text = '⬅️ اینلاین 🔩', callback_data = chat..'_keyboard'}
                 },{
-                  {text=getsettings('tgservice'),callback_data=chat..':lock tgservice'},{text = 'فیلتر پیغام ورود،خروج', callback_data = chat..'_tgservice'}
+                  {text=getsettings('tgservice'),callback_data=chat..':lock tgservice'},{text = '⬅️ پیغام ورود و خروج ⚙️', callback_data = chat..'_tgservice'}
                 },{
-                 {text=getsettings('muteall'),callback_data=chat..':lock muteall'}, {text = 'فیلتر تمامی گفتگو ها', callback_data = chat..'_muteall'}
+                 {text=getsettings('muteall'),callback_data=chat..':lock muteall'}, {text = '🔇 چت 🔇', callback_data = chat..'_muteall'}
                 },{
-                 {text=getsettings('welcome'),callback_data=chat..':lock welcome'}, {text = 'پیغام خودش آمدگویی', callback_data = chat..'_welcome'}
+                 {text=getsettings('welcome'),callback_data=chat..':lock welcome'}, {text = '✔️ خوش آمدگویی ✔️', callback_data = chat..'_welcome'}
                 },{
-                 {text=getsettings('spam'),callback_data=chat..':lock spam'}, {text = 'عملکرد قفل ارسال هرزنامه', callback_data = chat..'_spam'}
+         {text=getsettings('warn'),callback_data=chat..':lock warn'}, {text = '⬅️ عملکرد اخطار 💠', callback_data = chat..'_warn'}
+        },{
+          {text = '↙️حداکثر تعداد اخطار↘️ : '..tostring(WARN_MAX)..' wrn', callback_data = chat..'_WARN_MAX'}
                 },{
-                 {text = 'حداکثر زمان ارسال هرزنامه: '..tostring(TIME_MAX)..' ثانیه', callback_data = chat..'_TIME_MAX'}
+          {text='⬇️',callback_data=chat..':lock WARNMAXdown'},{text='⬆️',callback_data=chat..':lock WARNMAXup'}
                 },{
-									{text='⬇️',callback_data=chat..':lock TIMEMAXdown'},{text='⬆️',callback_data=chat..':lock TIMEMAXup'}
-									},{
-                 {text = 'حداکثر پیغام ارسال هرزنامه: '..tostring(MSG_MAX)..' پیام', callback_data = chat..'_MSG_MAX'}
+                 {text=getsettings('spam'),callback_data=chat..':lock spam'}, {text = '⬅️ عملکرد اسپم 💠', callback_data = chat..'_spam'}
                 },{
-									{text='⬇️',callback_data=chat..':lock MSGMAXdown'},{text='⬆️',callback_data=chat..':lock MSGMAXup'}
-									},{
-                  {text='تاریخ انقضاء گروه: '..getsettings('charge'),callback_data=chat..'_charge'}
+                 {text = '↙️حداکثر زمان اسپم↘️ : '..tostring(TIME_MAX)..' Sec', callback_data = chat..'_TIME_MAX'}
                 },{
-                  {text = 'صفحه قبلی ◀️', callback_data = 'left_page:'..chat},{text = '▶️ صفحه بعدی', callback_data = 'next_pagee:'..chat}
+                  {text='⬇️',callback_data=chat..':lock TIMEMAXdown'},{text='⬆️',callback_data=chat..':lock TIMEMAXup'}
+                  },{
+                 {text = '↗️حداکثر تعداد اسپم↘️ : '..tostring(MSG_MAX)..' Msg', callback_data = chat..'_MSG_MAX'}
+                },{
+                  {text='⬇️',callback_data=chat..':lock MSGMAXdown'},{text='⬆️',callback_data=chat..':lock MSGMAXup'}
+                  },{
+                  {text='➰شارژ گروه➰ : '..getsettings('charge'),callback_data=chat..'_charge'}
+                },{
+                  {text = '🔙برگشت به صفحه اول1️⃣', callback_data = 'left_page:'..chat},{text = '🌀برگشت به منوی اصلی🔙', callback_data = 'firstmenu:'..chat}
                 }
-							}
-              edit(q.inline_message_id,'تنظیمات-ابرگروه:',keyboard)
+              }
+              edit(q.inline_message_id,'_⚙️ تنظیمات ⚙️_\n`👈صفحه دوم 2 ️⃣`\n@BGTeaM',keyboard)
             end
-            else Canswer(q.id,'شما مالک/مدیر گروه نیستید و امکان تغییر تنظیمات را ندارید!\n>برای خرید ربات به کانال زیر مراجعه فرمایید:\n@BanG_TeaM',true)
+            else Canswer(q.id,'⚠️Your Not Admin⚠️\n @BanG_TeaM',true)
 						end
 						end
           if msg.message and msg.message.date > (os.time() - 5) and msg.message.text then
@@ -1295,6 +1435,6 @@ local function getsettings(value)
     end
   end
     end
-end
+	end
 
 return run()
